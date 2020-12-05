@@ -4,6 +4,7 @@ import StepperList from '../components/StepperList';
 import NameField from '../components/NameField';
 import ReplayIcon from '@material-ui/icons/Replay';
 import RadioGender from '../components/RadioGender';
+import BirthDate from '../components/BirthDate';
 
 const NameForm = ({ name, setName, error }) => (
     <Grid>
@@ -19,35 +20,44 @@ const GenderForm = ({ gender, setGender }) => (
     </Grid>
 );
 
-const FormsStep = ({ step, valid, name, setName, gender, setGender }) => {
+const BirthForm = ({ birth, setBirth }) => (
+    <Grid>
+        <Typography>Entrez votre date de naissance</Typography>
+        <BirthDate birth={birth} setBirth={setBirth} />
+    </Grid>
+);
+
+const EndForm = ({ name, gender, birth }) => (
+    <Grid>
+        <Typography>Vous êtes {name}, votre genre est {gender} et vous êtes {gender === 'female' ? "née" : "né"} le {new Date(birth).toLocaleDateString()} </Typography>
+    </Grid>
+);
+
+const FormsStep = ({ step, valid, name, setName, gender, setGender, birth, setBirth }) => {
 
     if (step === -1) return (<Typography>Début</Typography>);
     else if (step === 0) return NameForm({ name, setName, error: valid.name });
     else if (step === 1) return GenderForm({ gender, setGender });
-    else if (step === 2) return (<Typography>Step 3</Typography>);
-    else if (step >= 3) return (<Typography>Fin</Typography>);
+    else if (step === 2) return BirthForm({ birth, setBirth });
+    else if (step >= 3) return EndForm({ name, gender, birth });
 
     return (<Typography>End</Typography>);
 }
 
-const validName = ({ valid, setValid, disabled, setDisabled, name }) => {
-    if (name.length === 0) {
-        if (valid.name === true) setValid({ ...valid, name: false });
-        if (disabled === false) setDisabled(true);
-    }
-    else if ((/^[a-z-A-Z éÉëË]+$/i).test(name)) {
-        if (valid.name === true) setValid({ ...valid, name: false });
-        if (disabled === true) setDisabled(false);
-    }
-    else {
-        if (valid.name === false) setValid({ ...valid, name: true });
-        if (disabled === false) setDisabled(true);
-    }
-}
-
-const validSteps = ({ step, valid, setValid, disabled, setDisabled, name }) => {
+const validName = ({ step, valid, setValid, disabled, setDisabled, name }) => {
     if (step === 0) {
-        validName({ valid, setValid, disabled, setDisabled, name });
+        if (name.length === 0) {
+            if (valid.name === true) setValid({ ...valid, name: false });
+            if (disabled === false) setDisabled(true);
+        }
+        else if ((/^[a-z-A-Z éÉëË]+$/i).test(name)) {
+            if (valid.name === true) setValid({ ...valid, name: false });
+            if (disabled === true) setDisabled(false);
+        }
+        else {
+            if (valid.name === false) setValid({ ...valid, name: true });
+            if (disabled === false) setDisabled(true);
+        }
     }
 }
 
@@ -63,6 +73,7 @@ const MainPage = () => {
     const [step, setStep] = useState(-1);
     const [name, setName] = useState("");
     const [gender, setGender] = useState('female');
+    const [birth, setBirth] = useState(Date.now);
     const [valid, setValid] = useState({
         name: false,
     });
@@ -75,7 +86,7 @@ const MainPage = () => {
     }
 
     useEffect(() => {
-        validSteps({ step, valid, setValid, disabled, setDisabled, name });
+        validName({ step, valid, setValid, disabled, setDisabled, name });
     }, [step, name, valid, disabled])
 
     return (
@@ -85,16 +96,14 @@ const MainPage = () => {
                     <StepperList currentStep={step} />
                 </Grid>
                 <Grid item xs={8}>
-                    {FormsStep({ step, valid, name, setName, gender, setGender })}
+                    {FormsStep({ step, valid, name, setName, gender, setGender, birth, setBirth })}
                 </Grid>
                 <Grid item xs={8}>
-                    <Button
-                        variant="contained"
-                        onClick={() => nextStep()}
-                        disabled={disabled}
-                    >
+                {step < 3 &&
+                    <Button variant="contained" onClick={() => nextStep()} disabled={disabled}>
                         Suivant
                     </Button>
+                }
                     {step >= 0 &&
                         <IconButton onClick={() => resetForm({ setStep, setName })}>
                             <ReplayIcon />

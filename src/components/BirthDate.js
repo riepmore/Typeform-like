@@ -1,37 +1,29 @@
-import 'date-fns';
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
+import 'date-fns';
+import frLocale from "date-fns/locale/fr";
 import DateFnsUtils from '@date-io/date-fns';
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-export default function MaterialUIPickers() {
-    // The first commit of Material-UI
-    const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
-
-    const handleDateChange = (date) => {
-        setSelectedDate(date);
-    };
-
+const BirthDate = ({birth, setBirth}) => {
     return (
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <Grid container justify="space-around">
+        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={frLocale}>
                 <KeyboardDatePicker
                     disableToolbar
                     variant="inline"
-                    format="MM/dd/yyyy"
+                    format="dd/MM/yyyy"
                     margin="normal"
                     id="date-picker-inline"
-                    label="Date picker inline"
-                    value={selectedDate}
-                    onChange={handleDateChange}
+                    label="Date de naissance"
+                    value={birth}
+                    onChange={(date) => setBirth(date)}
                     KeyboardButtonProps={{
                         'aria-label': 'change date',
                     }}
                 />
-            </Grid>
         </MuiPickersUtilsProvider>
     );
 }
+ export default BirthDate;
