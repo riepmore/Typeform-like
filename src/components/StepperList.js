@@ -4,9 +4,9 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 
 const getSteps = () => {
-    return ['Step A',
-        'Step B',
-        'Step C'];
+    return ['Nom',
+        'Genre',
+        'Âge'];
 }
 
 const StepperList = ({currentStep}) => {
