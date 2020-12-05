@@ -1,5 +1,5 @@
-import { TextField } from '@material-ui/core';
 import React from 'react';
+import { TextField } from '@material-ui/core';
 
 const NameField = ({ name, setName, error }) => {
     return (
@@ -11,7 +11,7 @@ const NameField = ({ name, setName, error }) => {
             onChange={(event) => setName(event.target.value)}
             helperText={
                 error &&
-                "Ne doit pas contenir de caractères spéciaux !"
+                "Ne doit contenir que des caractères alphabétiques !"
             }
         />
     );

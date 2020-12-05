@@ -1,38 +1,53 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Grid, makeStyles, Typography } from '@material-ui/core';
+import { Button, Grid, IconButton, makeStyles, Typography } from '@material-ui/core';
 import StepperList from '../components/StepperList';
 import NameField from '../components/NameField';
+import ReplayIcon from '@material-ui/icons/Replay';
+import RadioGender from '../components/RadioGender';
 
 const NameForm = ({ name, setName, error }) => (
     <Grid>
-        <Typography> Entrez votre nom complet</Typography>
-        <NameField value={name} setName={setName} error={error} />
+        <Typography>Entrez votre nom complet</Typography>
+        <NameField name={name} setName={setName} error={error} />
     </Grid>
 );
 
-const FormsStep = ({ step, name, setName, valid }) => {
+const GenderForm = ({ gender, setGender }) => (
+    <Grid>
+        <Typography>Selectionnez votre genre</Typography>
+        <RadioGender gender={gender} setGender={setGender} />
+    </Grid>
+);
 
-    if (step === 0) return NameForm({ name, setName, error: valid.name });
-    else if (step === 1) return (<Typography>Step 2</Typography>);
+const FormsStep = ({ step, valid, name, setName, gender, setGender }) => {
+
+    if (step === -1) return (<Typography>Début</Typography>);
+    else if (step === 0) return NameForm({ name, setName, error: valid.name });
+    else if (step === 1) return GenderForm({ gender, setGender });
     else if (step === 2) return (<Typography>Step 3</Typography>);
-    else if (step === 3) return (<Typography>Last step</Typography>);
-    else if (step >= 4) return (<Typography>End</Typography>);
+    else if (step >= 3) return (<Typography>Fin</Typography>);
 
     return (<Typography>End</Typography>);
 }
 
-const validStep = ({ valid, setValid, disabled, setDisabled, name }) => {
+const validName = ({ valid, setValid, disabled, setDisabled, name }) => {
     if (name.length === 0) {
         if (valid.name === true) setValid({ ...valid, name: false });
         if (disabled === false) setDisabled(true);
     }
-    else if ((/^[a-zA-Z éÉëË0-9]+$/i).test(name)) {
+    else if ((/^[a-z-A-Z éÉëË]+$/i).test(name)) {
         if (valid.name === true) setValid({ ...valid, name: false });
         if (disabled === true) setDisabled(false);
     }
     else {
         if (valid.name === false) setValid({ ...valid, name: true });
         if (disabled === false) setDisabled(true);
+    }
+}
+
+const validSteps = ({ step, valid, setValid, disabled, setDisabled, name }) => {
+    if (step === 0) {
+        validName({ valid, setValid, disabled, setDisabled, name });
     }
 }
 
@@ -45,18 +60,23 @@ const useStyles = makeStyles((theme) => ({
 
 const MainPage = () => {
     const classes = useStyles();
-    const [step, setStep] = useState(0);
+    const [step, setStep] = useState(-1);
     const [name, setName] = useState("");
+    const [gender, setGender] = useState('female');
     const [valid, setValid] = useState({
         name: false,
     });
-    const [disabled, setDisabled] = useState(true);
+    const [disabled, setDisabled] = useState(false);
 
     const nextStep = () => setStep((prevState) => prevState + 1);
+    const resetForm = () => {
+        setName("");
+        setStep(-1);
+    }
 
     useEffect(() => {
-        validStep({ valid, setValid, disabled, setDisabled, name });
-    }, [name])
+        validSteps({ step, valid, setValid, disabled, setDisabled, name });
+    }, [step, name, valid, disabled])
 
     return (
         <div className={classes.root}>
@@ -65,7 +85,7 @@ const MainPage = () => {
                     <StepperList currentStep={step} />
                 </Grid>
                 <Grid item xs={8}>
-                    {FormsStep({ step, name, setName, valid })}
+                    {FormsStep({ step, valid, name, setName, gender, setGender })}
                 </Grid>
                 <Grid item xs={8}>
                     <Button
@@ -75,6 +95,11 @@ const MainPage = () => {
                     >
                         Suivant
                     </Button>
+                    {step >= 0 &&
+                        <IconButton onClick={() => resetForm({ setStep, setName })}>
+                            <ReplayIcon />
+                        </IconButton>
+                    }
                 </Grid>
             </Grid>
         </div>
