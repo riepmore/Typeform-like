@@ -1,24 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Grid, IconButton, makeStyles, Typography } from '@material-ui/core';
+import { Button, Grid, IconButton, makeStyles } from '@material-ui/core';
 import StepperList from '../components/StepperList';
-import NameField from '../components/NameField';
 import ReplayIcon from '@material-ui/icons/Replay';
-import RadioGender from '../components/RadioGender';
-import BirthDate from '../components/BirthDate';
 import FormsStep from '../components/FormSteps';
 
-const validName = ({ step, valid, setValid, disabled, setDisabled, name }) => {
+const validName = ({ step, nameError, setNameError, disabled, setDisabled, name }) => {
     if (step === 0) {
         if (name.length === 0) {
-            if (valid.name === true) setValid({ ...valid, name: false });
+            if (nameError === true) setNameError(false);
             if (disabled === false) setDisabled(true);
         }
         else if ((/^[a-z-A-Z éÉëË]+$/i).test(name)) {
-            if (valid.name === true) setValid({ ...valid, name: false });
+            if (nameError === true) setNameError(false);
             if (disabled === true) setDisabled(false);
         }
         else {
-            if (valid.name === false) setValid({ ...valid, name: true });
+            if (nameError === false) setNameError(true);
             if (disabled === false) setDisabled(true);
         }
     }
@@ -35,11 +32,9 @@ const MainPage = () => {
     const classes = useStyles();
     const [step, setStep] = useState(-1);
     const [name, setName] = useState("");
+    const [nameError, setNameError] = useState(true);
     const [gender, setGender] = useState('female');
     const [birth, setBirth] = useState(Date.now);
-    const [valid, setValid] = useState({
-        name: false,
-    });
     const [disabled, setDisabled] = useState(false);
 
     const nextStep = () => setStep((prevState) => prevState + 1);
@@ -49,8 +44,8 @@ const MainPage = () => {
     }
 
     useEffect(() => {
-        validName({ step, valid, setValid, disabled, setDisabled, name });
-    }, [step, name, valid, disabled])
+        validName({ step, nameError, setNameError, disabled, setDisabled, name });
+    }, [step, name, nameError, disabled])
 
     return (
         <div className={classes.root}>
@@ -59,7 +54,7 @@ const MainPage = () => {
                     <StepperList currentStep={step} />
                 </Grid>
                 <Grid item xs={8}>
-                    {FormsStep({ step, valid, name, setName, gender, setGender, birth, setBirth })}
+                    {FormsStep({ step, nameError, name, setName, gender, setGender, birth, setBirth })}
                 </Grid>
                 <Grid item xs={8}>
                 {step < 3 &&

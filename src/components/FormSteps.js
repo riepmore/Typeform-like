@@ -31,9 +31,9 @@ const EndForm = ({ name, gender, birth }) => (
     </Grid>
 );
 
-const FormsStep = ({ step, valid, name, setName, gender, setGender, birth, setBirth }) => {
+const FormsStep = ({ step, name, setName, nameError, gender, setGender, birth, setBirth }) => {
     if (step === -1) return (<Typography>Début</Typography>);
-    else if (step === 0) return NameForm({ name, setName, error: valid.name });
+    else if (step === 0) return NameForm({ name, setName, error: nameError });
     else if (step === 1) return GenderForm({ gender, setGender });
     else if (step === 2) return BirthForm({ birth, setBirth });
     else if (step >= 3) return EndForm({ name, gender, birth });
