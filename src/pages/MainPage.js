@@ -7,15 +7,41 @@ import FormsStep from '../components/FormSteps';
 const validName = ({ step, nameError, setNameError, disabled, setDisabled, name }) => {
     if (step === 0) {
         if (name.length === 0) {
-            if (nameError === true) setNameError(false);
+            if (nameError.error === true) {
+                setNameError({
+                    error: false,
+                    message: ""
+                })
+            };
+            if (disabled === false) setDisabled(true);
+        }
+        else if (name.length > 30) {
+            if (nameError.error === false) {
+                setNameError({
+                    error: true,
+                    message: "Ne doit pas contenir plus de 30 caractères !"
+                })
+
+            }
             if (disabled === false) setDisabled(true);
         }
         else if ((/^[a-z-A-Z éÉëË]+$/i).test(name)) {
-            if (nameError === true) setNameError(false);
+            if (nameError.error === true) {
+                setNameError({
+                    error: false,
+                    message: ""
+                })
+            };
             if (disabled === true) setDisabled(false);
         }
         else {
-            if (nameError === false) setNameError(true);
+            if (nameError.error === false) {
+                setNameError({
+                    error: true,
+                    message: "Ne doit contenir que des caractères alphabétiques !"
+                })
+
+            }
             if (disabled === false) setDisabled(true);
         }
     }
@@ -32,7 +58,10 @@ const MainPage = () => {
     const classes = useStyles();
     const [step, setStep] = useState(-1);
     const [name, setName] = useState("");
-    const [nameError, setNameError] = useState(true);
+    const [nameError, setNameError] = useState({
+        error: true,
+        message: ""
+    });
     const [gender, setGender] = useState('female');
     const [birth, setBirth] = useState(Date.now);
     const [disabled, setDisabled] = useState(false);
@@ -57,11 +86,11 @@ const MainPage = () => {
                     {FormsStep({ step, nameError, name, setName, gender, setGender, birth, setBirth })}
                 </Grid>
                 <Grid item xs={8}>
-                {step < 3 &&
-                    <Button variant="contained" onClick={() => nextStep()} disabled={disabled}>
-                        Suivant
+                    {step < 3 &&
+                        <Button variant="contained" onClick={() => nextStep()} disabled={disabled}>
+                            Suivant
                     </Button>
-                }
+                    }
                     {step >= 0 &&
                         <IconButton onClick={() => resetForm({ setStep, setName })}>
                             <ReplayIcon />

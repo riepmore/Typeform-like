@@ -6,12 +6,12 @@ const NameField = ({ name, setName, error }) => {
         <TextField
             id="nameField"
             label="Nom"
-            error={error}
+            error={error.error}
             value={name}
             onChange={(event) => setName(event.target.value)}
             helperText={
-                error &&
-                "Ne doit contenir que des caractères alphabétiques !"
+                error.error &&
+                error.message
             }
         />
     );

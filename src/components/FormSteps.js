@@ -4,6 +4,12 @@ import BirthDate from './BirthDate';
 import RadioGender from './RadioGender';
 import NameField from './NameField';
 
+const Begin = () => (
+    <Grid>
+        <Typography>Début</Typography>
+    </Grid>
+);
+
 const NameForm = ({ name, setName, error }) => (
     <Grid>
         <Typography>Entrez votre nom complet</Typography>
@@ -27,12 +33,15 @@ const BirthForm = ({ birth, setBirth }) => (
 
 const EndForm = ({ name, gender, birth }) => (
     <Grid>
-        <Typography>Vous êtes {name}, votre genre est {gender} et vous êtes {gender === 'female' ? "née" : "né"} le {new Date(birth).toLocaleDateString()} </Typography>
+        <Typography>{name}</Typography>
+        <Typography>Genre: {gender}</Typography>
+        <Typography>{gender === 'female' ? "Née" : "Né"} le {new Date(birth).toLocaleDateString()}</Typography>
     </Grid>
 );
 
 const FormsStep = ({ step, name, setName, nameError, gender, setGender, birth, setBirth }) => {
-    if (step === -1) return (<Typography>Début</Typography>);
+    console.log(nameError);
+    if (step === -1) return Begin();
     else if (step === 0) return NameForm({ name, setName, error: nameError });
     else if (step === 1) return GenderForm({ gender, setGender });
     else if (step === 2) return BirthForm({ birth, setBirth });

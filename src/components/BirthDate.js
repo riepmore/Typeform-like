@@ -7,23 +7,26 @@ import {
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-const BirthDate = ({birth, setBirth}) => {
+const BirthDate = ({ birth, setBirth }) => {
     return (
         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={frLocale}>
-                <KeyboardDatePicker
-                    disableToolbar
-                    variant="inline"
-                    format="dd/MM/yyyy"
-                    margin="normal"
-                    id="date-picker-inline"
-                    label="Date de naissance"
-                    value={birth}
-                    onChange={(date) => setBirth(date)}
-                    KeyboardButtonProps={{
-                        'aria-label': 'change date',
-                    }}
-                />
+            <KeyboardDatePicker
+                // disableToolbar
+                disableFuture
+                invalidDateMessage="Format de la date invalide"
+                maxDateMessage="La date ne peut être supérieur à aujourd'hui"
+                variant="inline"
+                format="dd/MM/yyyy"
+                margin="normal"
+                id="date-picker-inline"
+                label="Date de naissance"
+                value={birth}
+                onChange={(date) => setBirth(date)}
+                KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                }}
+            />
         </MuiPickersUtilsProvider>
     );
 }
- export default BirthDate;
+export default BirthDate;
